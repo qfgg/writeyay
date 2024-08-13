@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     "accounts",
+    "subscription",
     "ichecker",
 ]
 
@@ -118,6 +119,7 @@ MEDIA_ROOT = BASE_DIR / "mediafiles"
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -125,3 +127,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'joosurrey@gmail.com'
 EMAIL_HOST_PASSWORD = 'icaieiwwuguyterv'
 EMAIL_FROM =  'JOO<joosurrey@gmail.com>'
+
+## Stripe
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+PRODUCT_PRICE = os.getenv('PRODUCT_PRICE')
+
+REDIRECT_DOMAIN = os.getenv('REDIRECT_DOMAIN')
