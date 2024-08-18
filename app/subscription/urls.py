@@ -9,5 +9,5 @@ urlpatterns = [
     path('subscribe_cancel/', views.subscribe_cancel, name='subscribe_cancel'),
     path('create_portal_session/', views.create_portal_session, name='create_portal_session'),
     path('webhook/', views.stripe_webhook, name='stripe_webhook'),
-    path('subscription', views.subscription_management, name='subscription'),
+    path('subscription/', views.subscription_management, name='subscription'),
 ]

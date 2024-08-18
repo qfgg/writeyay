@@ -3,15 +3,5 @@
 {% block title %}IELTS writing AI checker{% endblock %}
 
 {% block content %}
-<div>
-    {% if user.is_authenticated %}
-    <span>{{ user.username }}</span>
-    <a href="{% url 'password_change' %}">Change your password</a>
-    <a href="{% url 'logout' %}">Log out</a>
-    {% else %}
-    <a href="{% url 'login' %}">Log in</a>
-    <a href="{% url 'register' %}">Sign Up</a>
-    {% endif %}
-    <a href="{% url 'pricing' %}">Pricing</a>
-</div>
+
 {% endblock %}

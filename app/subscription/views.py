@@ -50,11 +50,9 @@ def create_portal_session(request):
 
     # This is the URL to which the customer will be redirected after they are
     # done managing their billing with the portal.
-    return_url = settings.REDIRECT_DOMAIN
-
     portalSession = stripe.billing_portal.Session.create(
         customer=checkout_session.customer,
-        return_url=return_url,
+        return_url=settings.REDIRECT_DOMAIN + '/subscription',
     )
     return redirect(portalSession.url, code=303)
 
@@ -81,21 +79,31 @@ def stripe_webhook(request):
         # Handle successful checkout session here
         session_id = session.get('id', None)
         customer_email = session["customer_details"]["email"]
-        user = User.objects.get(email=customer_email)
-        subscription = Subscription.objects.get(user=user)
-        subscription.stripe_checkout_id = session_id
-        subscription.is_subscribed = True
-        subscription.save()
+        try:
+            user = User.objects.get(email=customer_email)
+            subscription = Subscription.objects.get(user=user)
+            subscription.stripe_checkout_id = session_id
+            subscription.is_subscribed = True
+            subscription.save()
+        except User.DoesNotExist:
+            print(f'User with email {customer_email} does not exist')
     elif event['type'] == 'customer.subscription.deleted':
         # handle subscription canceled automatically based
         # upon your subscription settings. Or if the user cancels it.
         session = event['data']['object']
-        session_id = session.get('id', None)
-        customer_email = session["customer_details"]["email"]
-        user = User.objects.get(email=customer_email)
-        subscription = Subscription.objects.get(user=user)
-        subscription.stripe_checkout_id = session_id
-        subscription.is_subscribed = False
-        subscription.save()
+        customer_id = session['customer']
+        try:
+            customer = stripe.Customer.retrieve(customer_id)
+            customer_email = customer.email
+            try:
+                user = User.objects.get(email=customer_email)
+                subscription = Subscription.objects.get(user=user)
+                subscription.stripe_checkout_id = None
+                subscription.is_subscribed = False
+                subscription.save()
+            except User.DoesNotExist:
+                print(f'User with email {customer_email} does not exist')
+        except stripe.error.InvalidRequestError as e:
+            print(f'Error retrieving customer: {e}')
 
     return HttpResponse(status=200)

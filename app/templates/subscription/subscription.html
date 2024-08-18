@@ -3,8 +3,12 @@
 {% block title %}Subscription Management{% endblock %}
 
 {% block content %}
-<form action="create_portal_session/" method="POST">
-    {% csrf_token %}
-    <button id="checkout-and-portal-button" type="submit">Manage your billing information</button>
-</form>
+<section class="bg-[#F4F7FF] py-14 lg:py-[90px] dark:bg-dark">
+    <div class="container">
+        <form action="create_portal_session/" method="POST">
+            {% csrf_token %}
+            <button id="checkout-and-portal-button" type="submit">Manage your billing information</button>
+        </form>
+    </div>
+</section>
 {% endblock %}

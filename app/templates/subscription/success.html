@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Thanks for your order!</title>
-</head>
-<body>
-  <section>
+{% extends "base.html" %}
+
+{% block title %}Checkout canceled{% endblock %}
+
+{% block content %}
+<section class="bg-[#F4F7FF] py-14 lg:py-[90px] dark:bg-dark">
+  <div class="container">
     <div class="product Box-root">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14px" height="16px" viewBox="0 0 14 16" version="1.1">
           <defs/>
@@ -18,6 +18,6 @@
         <h3>Subscription to Starter plan successful!</h3>
       </div>
     </div>
-  </section>
-</body>
-</html>
+  </div>
+</section>
+{% endblock %}
