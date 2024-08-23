@@ -10,7 +10,11 @@ from .models import Subscription
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def pricing(request):
-    return render(request, 'subscription/pricing.html')
+    canuse = False
+    if request.user.is_authenticated:
+        subscription = Subscription.objects.get(user=request.user)
+        canuse = subscription.can_use()
+    return render(request, 'subscription/pricing.html', { 'canuse': canuse })
 
 def subscription_management(request):
     return render(request, 'subscription/subscription.html')
