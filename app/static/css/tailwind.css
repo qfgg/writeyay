@@ -918,6 +918,11 @@ body {
   margin-top: 6px;
 }
 
+.px-0{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .block{
   display: block;
 }
@@ -1048,6 +1053,14 @@ body {
 
 .w-px{
   width: 1px;
+}
+
+.w-20p{
+  width: 20%;
+}
+
+.w-50p{
+  width: 50%;
 }
 
 .max-w-\[160px\]{
@@ -1697,8 +1710,20 @@ body {
   padding-top: 120px;
 }
 
+.pt-5px{
+  padding-top: 5px;
+}
+
 .text-center{
   text-align: center;
+}
+
+.text-right{
+  text-align: right;
+}
+
+.max-width-120{
+  max-width: 120px;
 }
 
 .text-2xl{
@@ -1719,6 +1744,10 @@ body {
 .text-5xl{
   font-size: 3rem;
   line-height: 1;
+}
+
+.text-8r{
+  font-size: 8rem;
 }
 
 .text-\[28px\]{
@@ -2881,6 +2910,14 @@ body {
     padding-left: 0px;
   }
 
+  .pl-10px{
+    padding-left: 10px;
+  }
+
+  .pt-10px{
+    padding-top: 10px;
+  }
+
   .lg\:pr-0{
     padding-right: 0px;
   }
@@ -3068,4 +3105,15 @@ body {
   .\32xl\:p-\[60px\]{
     padding: 60px;
   }
+}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#d1d1d1;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#b1b1b1}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
 }
