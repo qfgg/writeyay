@@ -9,14 +9,14 @@ class Subscription(models.Model):
     usage_count = models.PositiveIntegerField(default=0)
     is_subscribed = models.BooleanField(default=False)
     stripe_checkout_id = models.CharField(max_length=500, blank=True, null=True)
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
 
     def can_use(self):
         return self.usage_count < 2 or self.is_subscribed
 
     def use(self):
-        if (not self.is_subscribed) and self.usage_count < 2:
-            self.usage_count += 1
-            self.save()
+        self.usage_count += 1
+        self.save()
 
 @receiver(post_save, sender=User)
 def create_user_subscription(sender, instance, created, **kwargs):

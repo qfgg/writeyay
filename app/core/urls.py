@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('', include('subscription.urls')),
     path('accounts/', include('accounts.urls')),
+    path('accounts/auth/', include('allauth.urls')),
 ]
 
 if bool(settings.DEBUG):
