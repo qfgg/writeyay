@@ -2,7 +2,6 @@ import stripe
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Subscription
@@ -22,6 +21,13 @@ def subscription_management(request):
 @login_required(login_url='login')
 def create_checkout_session(request):
     try:
+        customer = stripe.Customer.create(
+            email=request.user.email
+        )
+        subscription = Subscription.objects.get(user=request.user)
+        subscription.stripe_customer_id = customer.id
+        subscription.save()
+
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
@@ -30,6 +36,7 @@ def create_checkout_session(request):
                 },
             ],
             mode='subscription',
+            customer=customer.id,
             success_url=settings.REDIRECT_DOMAIN + '/subscribe_success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=settings.REDIRECT_DOMAIN + '/subscribe_cancel',
             automatic_tax={'enabled': True},
@@ -82,32 +89,25 @@ def stripe_webhook(request):
         session = event['data']['object']
         # Handle successful checkout session here
         session_id = session.get('id', None)
-        customer_email = session["customer_details"]["email"]
+        customer_id = session.get('customer')
         try:
-            user = User.objects.get(email=customer_email)
-            subscription = Subscription.objects.get(user=user)
+            subscription = Subscription.objects.get(stripe_customer_id=customer_id)
             subscription.stripe_checkout_id = session_id
             subscription.is_subscribed = True
             subscription.save()
-        except User.DoesNotExist:
-            print(f'User with email {customer_email} does not exist')
+        except Subscription.DoesNotExist:
+            print(f"Subscription with customer_id {customer_id} does not exist.")
     elif event['type'] == 'customer.subscription.deleted':
         # handle subscription canceled automatically based
         # upon your subscription settings. Or if the user cancels it.
         session = event['data']['object']
         customer_id = session['customer']
         try:
-            customer = stripe.Customer.retrieve(customer_id)
-            customer_email = customer.email
-            try:
-                user = User.objects.get(email=customer_email)
-                subscription = Subscription.objects.get(user=user)
-                subscription.stripe_checkout_id = None
-                subscription.is_subscribed = False
-                subscription.save()
-            except User.DoesNotExist:
-                print(f'User with email {customer_email} does not exist')
-        except stripe.error.InvalidRequestError as e:
-            print(f'Error retrieving customer: {e}')
+            subscription = Subscription.objects.get(stripe_customer_id=customer_id)
+            subscription.stripe_checkout_id = None
+            subscription.is_subscribed = False
+            subscription.save()
+        except Subscription.DoesNotExist:
+            print(f"Subscription with customer_id {customer_id} does not exist.")
 
     return HttpResponse(status=200)

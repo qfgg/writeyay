@@ -15,7 +15,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('login/', views.user_login, name='login'),
-    path('logout/', allauth_views.LogoutView.as_view(), name='logout'),
+    path('logout/', views.user_logout, name='logout'),
     path('password_change/', PasswordChangeView.as_view(
         template_name='accounts/password_change.html'
     ), name='password_change'),
