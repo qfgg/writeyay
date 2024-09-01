@@ -37,6 +37,7 @@ def create_checkout_session(request):
             ],
             mode='subscription',
             customer=customer.id,
+            customer_update={'address': 'auto'},
             success_url=settings.REDIRECT_DOMAIN + '/subscribe_success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=settings.REDIRECT_DOMAIN + '/subscribe_cancel',
             automatic_tax={'enabled': True},

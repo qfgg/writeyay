@@ -80,3 +80,6 @@ def user_logout(request):
 
 def login_cancelled(request):
     return redirect('login')
+
+def sociallogin_local_exist_success(request):
+    return redirect('home')

@@ -52,6 +52,7 @@ html {
   /* 5 */
   font-variation-settings: normal;
   /* 6 */
+  background-color: rgb(255 255 255);
 }
 
 /*
@@ -1708,6 +1709,14 @@ body {
 
 .pt-\[120px\]{
   padding-top: 120px;
+}
+
+.pt-\[180px\]{
+  padding-top: 180px;
+}
+
+.pb-\[180px\]{
+  padding-bottom: 180px;
 }
 
 .pt-5px{

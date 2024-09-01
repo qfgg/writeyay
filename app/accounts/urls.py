@@ -37,4 +37,5 @@ urlpatterns = [
         template_name='accounts/password_reset_complete.html'
     ), name='password_reset_complete'),
     path('auth/3rdparty/login/cancelled/', views.login_cancelled, name='login_cancelled'),
+    path('auth/3rdparty/', views.sociallogin_local_exist_success, name='login_exist')
 ]
