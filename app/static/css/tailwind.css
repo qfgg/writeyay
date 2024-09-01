@@ -3117,3 +3117,9 @@ footer {
   width: 100%;
   text-align: center;
 }
+
+.messages {
+  margin-top: 80px;
+  margin-bottom: -80px;
+  margin-left: 10px;
+}

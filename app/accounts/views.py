@@ -31,8 +31,8 @@ def register(request):
                 'token': default_token_generator.make_token(user),
             })
             send_mail(mail_subject, message, settings.EMAIL_HOST_USER, [email])
-            
-            messages.success(request, 'Please confirm your email address to complete the registration.')
+
+            messages.success(request, 'Please login to your email and you will find an email we sent you. Click the confirmation link to complete the registration.')
             return redirect('login')
     else:
         form = RegistrationForm()
