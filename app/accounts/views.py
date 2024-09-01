@@ -77,3 +77,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('home')
+
+def login_cancelled(request):
+    return redirect('login')
