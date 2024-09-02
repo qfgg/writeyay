@@ -1715,8 +1715,28 @@ body {
   padding-top: 180px;
 }
 
-.pb-\[180px\]{
-  padding-bottom: 180px;
+.pb-\[680px\]{
+  padding-bottom: 680px;
+}
+
+.pb-\[340px\]{
+  padding-bottom: 340px;
+}
+
+.pb-\[290px\]{
+  padding-bottom: 290px;
+}
+
+.pb-\[240px\]{
+  padding-bottom: 240px;
+}
+
+.pb-\[160px\]{
+  padding-bottom: 160px;
+}
+
+.pb-\[130px\]{
+  padding-bottom: 130px;
 }
 
 .pt-5px{
@@ -3120,9 +3140,6 @@ body {
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#d1d1d1;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#b1b1b1}
 
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
   width: 100%;
   text-align: center;
 }
