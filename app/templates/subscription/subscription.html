@@ -3,12 +3,52 @@
 {% block title %}Subscription Management{% endblock %}
 
 {% block content %}
-<section class="bg-[#F4F7FF] py-14 lg:py-[90px] dark:bg-dark">
-    <div class="container">
-        <form action="create_portal_session/" method="POST">
+<section class="bg-[#F4F7FF] pt-[70px] dark:bg-dark">
+    <div class="relative z-10 overflow-hidden rounded-xl bg-white px-8 py-10 shadow-pricing dark:bg-dark-2 sm:p-12 lg:px-6 lg:py-10 xl:p-14">
+        <h2 class="mb-11 text-4xl font-semibold text-dark dark:text-white xl:text-[42px] xl:leading-[1.21]">
+          <span class="-ml-1 -tracking-[2px]">My Subscription</span>
+        </h2>
+        <div class="mb-[50px]">
+            {% if subscription.is_subscribed %}
+            <div class="flex flex-col gap-[14px]">
+                <div class="flex text-base text-body-color dark:text-dark-6">
+                    <div class="row-label">Current Plan: </div><div>Premium</div>
+                </div>
+                <div class="flex text-base text-body-color dark:text-dark-6">
+                    <div class="row-label">Plan Start Time: </div><div>{{ subscription.start|date:"Y-m-d" }}</div>
+                </div>
+                <div class="flex text-base text-body-color dark:text-dark-6">
+                    <div class="row-label">Next Renew Time: </div><div>{{ subscription.end|date:"Y-m-d" }}</div>
+                </div>
+                <div class="flex text-base text-body-color dark:text-dark-6">
+                    <div class="row-label">Plan Price: </div><div>{{ subscription.price }} {{ subscription.currency|upper }} / {{ subscription.interval }}</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="flex text-base text-body-color dark:text-dark-6">
+                <div class="row-label">Current Plan: </div><div>Basic</div>
+            </div>
+            <div class="flex text-base text-body-color dark:text-dark-6">
+                <div class="row-label">Credits Left: </div><div>{{ subscription.credits }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% if subscription.is_subscribed %}
+        <form action="/create_portal_session/" method="POST">
             {% csrf_token %}
-            <button id="checkout-and-portal-button" type="submit">Manage your billing information</button>
+            <button id="checkout-and-portal-button" type="submit" class="inline-block rounded-md bg-primary px-7 py-3 text-center text-base font-medium text-white transition hover:bg-blue-dark">
+                Manage Subscription
+            </button>
         </form>
+        {% elif subscription.credits == 0 %}
+        <form action="/create_checkout_session/" method="POST">
+            {% csrf_token %}
+            <button id="checkout-and-portal-button" type="submit" class="inline-block rounded-md bg-primary px-7 py-3 text-center text-base font-medium text-white transition hover:bg-blue-dark">
+                Start Subscribing Now
+            </button>
+        </form>
+        {% else %}
+        {% endif %}
     </div>
 </section>
 {% endblock %}

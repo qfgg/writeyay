@@ -1,4 +1,5 @@
 import stripe
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -16,7 +17,32 @@ def pricing(request):
     return render(request, 'subscription/pricing.html', { 'canuse': canuse })
 
 def subscription_management(request):
-    return render(request, 'subscription/subscription.html')
+    sub = Subscription.objects.get(user=request.user)
+    subscription_detail = None
+    if sub.is_subscribed:
+        try:
+            checkout_session = stripe.checkout.Session.retrieve(sub.stripe_checkout_id)
+            subscription = stripe.Subscription.retrieve(checkout_session.subscription)
+            subscription_detail = {
+                'is_subscribed': subscription.status == 'active',
+                'start': datetime.fromtimestamp(subscription.current_period_start),
+                'end': datetime.fromtimestamp(subscription.current_period_end),
+                'price': subscription['items']['data'][0]['price']['unit_amount'] / 100,
+                'currency': subscription['items']['data'][0]['price']['currency'],
+                'interval': subscription['items']['data'][0]['plan']['interval']
+            }
+            print(subscription_detail)
+        except stripe.error.StripeError as e:
+            print(e)
+            return HttpResponse("Retrieve stripe subscription error", status=500)
+    else:
+        subscription_detail = {
+            'is_subscribed': False,
+            'credits': 0 if sub.usage_count >= 2 else 2 - sub.usage_count
+        }
+    return render(request, 'subscription/subscription.html', {
+        'subscription': subscription_detail,
+    })
 
 @login_required(login_url='login')
 def create_checkout_session(request):
@@ -45,7 +71,7 @@ def create_checkout_session(request):
         return redirect(checkout_session.url, code=303)
     except Exception as e:
         print(e)
-        return HttpResponse("Server error", status=500)
+        return HttpResponse("Create checkout session error", status=500)
 
 def subscribe_success(request):
     checkout_session_id = request.GET.get('session_id', None)
