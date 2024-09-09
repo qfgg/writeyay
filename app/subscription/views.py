@@ -16,6 +16,7 @@ def pricing(request):
         canuse = subscription.can_use()
     return render(request, 'subscription/pricing.html', { 'canuse': canuse })
 
+@login_required(login_url='login')
 def subscription_management(request):
     sub = Subscription.objects.get(user=request.user)
     subscription_detail = None

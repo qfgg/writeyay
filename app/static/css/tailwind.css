@@ -895,6 +895,10 @@ body {
   margin-top: 0.25rem;
 }
 
+.mt-4{
+  margin-top: 1rem;
+}
+
 .mt-12{
   margin-top: 3rem;
 }
@@ -917,6 +921,10 @@ body {
 
 .mt-\[6px\]{
   margin-top: 6px;
+}
+
+.mt-22px{
+  margin-top: 22px;
 }
 
 .px-0{
@@ -2947,10 +2955,6 @@ body {
     padding-left: 0px;
   }
 
-  .pl-10px{
-    padding-left: 10px;
-  }
-
   .pt-10px{
     padding-top: 10px;
   }
@@ -3160,4 +3164,8 @@ footer {
 
 .row-label{
   width: 200px;
+}
+
+.hide{
+  display: none;
 }
