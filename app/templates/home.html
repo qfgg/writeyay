@@ -3,11 +3,11 @@
 {% block title %}IELTS writing AI checker{% endblock %}
 
 {% block content %}
-<section id="home" class="bg-\[\#F4F7FF\] relative z-20 overflow-hidden pt-20 dark:bg-dark lg:pt-[90px]">
+<section id="score" class="bg-\[\#F4F7FF\] relative z-20 overflow-hidden pt-20 dark:bg-dark lg:pt-[90px]">
   <div class="container mx-auto">
     <div class="-mx-4 flex">
       <div class="w-20p relative z-10 flex justify-center items-center bg-primary bg-opacity-70 text-8r font-extrabold text-white text-center sm:p-5">
-        <span>5.5</span>
+        <span>{{result.overall.total}}</span>
         <div>
           <span class="absolute left-0 top-0 -z-10">
             <svg width="106" height="144" viewBox="0 0 106 144" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,12 +26,12 @@
         <div>
           <div class="flex justify-between mb-6">
             <span class="text-5xl font-extrabold text-white">
-              5.5
+              {{result.overall.breakdown.ta}}
             </span>
             <span class="text-right text-white max-width-120 ">Task Achievement</span>
           </div>
           <div class="text-sm font-semibold text-white text-opacity-70">
-            The essay addresses both sides of the argument but lacks depth in discussing the advantages and disadvantages of each perspective. The argument is somewhat one-sided towards the preference for familiar things, with insufficient development of the counterargument.
+            {{result.overall.summary.ta}}
           </div>
         </div>
         <div>
@@ -52,12 +52,12 @@
         <div>
           <div class="flex justify-between mb-6">
             <span class="text-5xl font-extrabold text-white">
-              5.5
+              {{result.overall.breakdown.cc}}
             </span>
             <span class="text-right text-white max-width-120 ">Coherence and Cohesion</span>
           </div>
           <div class="text-sm font-semibold text-white text-opacity-70">
-            Coherence and cohesion are generally adequate, though there are issues with logical flow and clarity in places. Transitions between ideas are sometimes abrupt, affecting the overall cohesiveness of the essay.
+            {{result.overall.summary.cc}}
           </div>
         </div>
         <div>
@@ -78,12 +78,12 @@
         <div>
           <div class="flex justify-between mb-6">
             <span class="text-5xl font-extrabold text-white">
-              6
+              {{result.overall.breakdown.lr}}
             </span>
             <span class="text-right text-white max-width-120 ">Lexical Resource</span>
           </div>
           <div class="text-sm font-semibold text-white text-opacity-70">
-            The lexical resource is appropriate, with a range of vocabulary used. However, there are occasional awkward phrases and word choices that affect clarity, such as 'refreshing places' and 'pursue the things that belong to you'.
+            {{result.overall.summary.lr}}
           </div>
         </div>
         <div>
@@ -104,12 +104,12 @@
         <div>
           <div class="flex justify-between">
             <span class="text-5xl font-extrabold text-white">
-              5
+              {{result.overall.breakdown.gra}}
             </span>
             <span class="text-right text-white max-width-120 ">Grammatical Range and Accuracy</span>
           </div>
           <div class="text-sm font-semibold text-white text-opacity-70">
-            Grammatical range and accuracy are inconsistent. There are several errors in sentence structure and punctuation, and some sentences are awkward or unclear. Issues include run-on sentences and incorrect use of articles and prepositions.
+            {{result.overall.summary.gra}}
           </div>
         </div>
         <div>
@@ -140,73 +140,34 @@
     </div>
   </div>
 </section>
-<section id="check" class="bg-\[\#F4F7FF\] pt-5px dark:bg-dark-2 mb-[50px]">
-  <form>
-    {% csrf_token %}
-    <div class="container px-0 flex">
-      <div id="essay-form" class="w-50p mr-4 hide">
-        <div class="mb-1">
-          <label for="topic" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Topic</label>
-          <textarea name="topic" id="topic" class="w-full border border-primary rounded-md  bg-transparent text-body-color placeholder:text-body-color/60 focus:border-primary focus:outline-none dark:border-dark-3 dark:text-dark-6"></textarea>
-        </div>
-        <div class="mb-2">
-          <label for="essay" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Essay <span class="text-dark-6 text-sm">(Word Count: 0)</span></label>
-          <textarea name="essay" id="essay" rows="14" class="w-full border border-primary rounded-md  bg-transparent text-body-color placeholder:text-body-color/60 focus:border-primary focus:outline-none dark:border-dark-3 dark:text-dark-6"></textarea>
+<section class="bg-\[\#F4F7FF\] pt-5px dark:bg-dark-2 mb-[30px]">
+  <div class="container px-0">
+    <div class="flex">
+      <div class="w-50p mr-4 mt-1">
+        <a href="{% url 'analyze' %}" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
+          Clear and Check an Essay
+        </a>
+        <div class="mt-2">
+          {% for split in result.splits %}
+            {% if split.id == -1 %}
+            <span>{{split.val}}</span>
+            {% else %}
+            <b class="bg-error">{{split.val}}</b>
+            {% endif %}
+          {% endfor %}
         </div>
       </div>
-      <div id="highlighted-essay">
-        result
-      </div>
-      <div class="w-50p pt-10px" style="height: calc(100vh - 400px);overflow-y: auto;">
-        <div class="mt-22px flex">
-          <button id="submit-button" type="button" class="hide inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-            Check
-          </button>
-          <button id="reset-button" type="button" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-            Clear and Check Another Essay
-          </button>
-        </div>
-        <div class="mt-4">
+      <div class="w-50p">
+        <div class="py-2 px-2">
+          {% for ex in result.explanations %}
           <div class="group mb-2 p-3 rounded-xl bg-white shadow-testimonial dark:bg-dark dark:shadow-none text-sm text-body-color dark:text-dark-6">
-            <b>try to discover various destinations</b>
-            <p>'Try to discover' is a bit awkward in this context. Try 'are exploring' for smoother communication. Ex: 'more and more people are exploring various destinations'</p>
+            <b>{{ex.bad}}</b>
+            <p>{{ex.hint}}</p>
           </div>
+          {% endfor %}
         </div>
       </div>
     </div>
-  </form>
+  </div>
 </section>
-<script>
-  function submit() {
-    const topic = document.getElementById('topic').value;
-    const essay = document.getElementById('essay').value;
-
-    fetch("{% url 'analyze' %}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({ topic: topic, essay: essay })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('highlighted-essay').classList.remove('hide');
-        document.getElementById('essay-form').classList.add('hide');
-        document.getElementById('submit-button').classList.add('hide');
-        document.getElementById('reset-button').classList.remove('hide');
-    });
-  }
-  document.getElementById('submit-button').addEventListener('click', submit);
-
-  function resetForm() {
-    document.getElementById('essay-form').classList.remove('hide');
-    document.getElementById('submit-button').classList.remove('hide');
-    document.getElementById('reset-button').classList.add('hide');
-    document.getElementById('highlighted-essay').classList.add('hide');
-    document.getElementById('topic').value = '';
-    document.getElementById('essay').value = '';
-  }
-  document.getElementById('reset-button').addEventListener('click', resetForm);
-</script>
 {% endblock %}

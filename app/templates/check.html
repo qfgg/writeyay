@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}IELTS writing AI checker{% endblock %}
+
+{% block content %}
+<section class="bg-\[\#F4F7FF\] pt-5px dark:bg-dark-2 mb-[30px]">
+    <div class="container px-0 pt-20 lg:pt-[90px]">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <button type="submit" class="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
+          Check
+        </button>
+        <div class="mt-2 mb-1">
+          <label for="topic" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Topic</label>
+          <textarea name="topic" id="topic" class="w-full border border-primary rounded-md  bg-transparent text-body-color placeholder:text-body-color/60 focus:border-primary focus:outline-none dark:border-dark-3 dark:text-dark-6"></textarea>
+        </div>
+        <div class="mb-2">
+          <label for="essay" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Essay <span class="text-dark-6 text-sm">(Word Count: 0)</span></label>
+          <textarea name="essay" id="essay" rows="5" class="w-full border border-primary rounded-md  bg-transparent text-body-color placeholder:text-body-color/60 focus:border-primary focus:outline-none dark:border-dark-3 dark:text-dark-6"></textarea>
+        </div>
+      </form>
+    </div>
+</section>
+{% endblock %}
