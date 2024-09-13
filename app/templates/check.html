@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}IELTS writing AI checker{% endblock %}
+{% block title %}IELTS Writing AI Analyzer{% endblock %}
 
 {% block content %}
 <section class="bg-\[\#F4F7FF\] pt-5px dark:bg-dark-2 mb-[30px]">
@@ -8,7 +8,7 @@
       <form method="post" novalidate>
         {% csrf_token %}
         <button type="submit" class="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-          Check
+          Analyze
         </button>
         <div class="mt-2 mb-1">
           <label for="topic" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Topic</label>

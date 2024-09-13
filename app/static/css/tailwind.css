@@ -52,7 +52,6 @@ html {
   /* 5 */
   font-variation-settings: normal;
   /* 6 */
-  background-color: rgb(255 255 255);
 }
 
 /*
@@ -1719,6 +1718,10 @@ body {
   padding-top: 3rem;
 }
 
+.pt-2{
+  padding-top: 0.5rem;
+}
+
 .pt-20{
   padding-top: 5rem;
 }
@@ -3175,4 +3178,8 @@ footer {
 }
 .bg-error{
   background-color: #fecaca;
+}
+.bg-error:hover{
+  background-color: #fca5a5;
+  cursor: pointer;
 }

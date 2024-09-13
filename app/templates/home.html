@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}IELTS writing AI checker{% endblock %}
-
+{% block title %}IELTS Writing AI Analyzer{% endblock %}
 {% block content %}
-<section id="score" class="bg-\[\#F4F7FF\] relative z-20 overflow-hidden pt-20 dark:bg-dark lg:pt-[90px]">
+<section id="score" class="bg-gray-1 relative z-20 overflow-hidden pt-20 dark:bg-dark lg:pt-[90px]">
   <div class="container mx-auto">
     <div class="-mx-4 flex">
       <div class="w-20p relative z-10 flex justify-center items-center bg-primary bg-opacity-70 text-8r font-extrabold text-white text-center sm:p-5">
@@ -140,25 +139,30 @@
     </div>
   </div>
 </section>
-<section class="bg-\[\#F4F7FF\] pt-5px dark:bg-dark-2 mb-[30px]">
+<section class="bg-gray-1 dark:bg-dark-2 pt-2">
   <div class="container px-0">
-    <div class="flex">
-      <div class="w-50p mr-4 mt-1">
-        <a href="{% url 'analyze' %}" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-          Clear and Check an Essay
-        </a>
-        <div class="mt-2">
+    <div>
+      <a href="{% url 'analyze' %}" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
+        Enter an Essay for Analysis
+      </a>
+    </div>
+    <div class="flex mt-2">
+      <div class="w-50p mr-4">
+        <div>
           {% for split in result.splits %}
             {% if split.id == -1 %}
             <span>{{split.val}}</span>
             {% else %}
-            <b class="bg-error">{{split.val}}</b>
+            <span class="bg-error">{{split.val}}</span>
             {% endif %}
           {% endfor %}
         </div>
+        <div class="mt-2">
+          <span class="text-dark-6 text-sm">(Word Count: 0)</span>
+        </div>
       </div>
       <div class="w-50p">
-        <div class="py-2 px-2">
+        <div class="px-2">
           {% for ex in result.explanations %}
           <div class="group mb-2 p-3 rounded-xl bg-white shadow-testimonial dark:bg-dark dark:shadow-none text-sm text-body-color dark:text-dark-6">
             <b>{{ex.bad}}</b>
