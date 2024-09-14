@@ -141,11 +141,13 @@
 </section>
 <section class="bg-gray-1 dark:bg-dark-2 pt-2">
   <div class="container px-0">
+    {% if user.is_authenticated %}
     <div>
       <a href="{% url 'analyze' %}" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-        Enter an Essay for Analysis
+        Enter an IELTS Essay for Analysis
       </a>
     </div>
+    {% endif %}
     <div class="flex mt-2">
       <div class="w-50p mr-4">
         <div>

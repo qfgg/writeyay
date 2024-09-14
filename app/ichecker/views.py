@@ -1,5 +1,8 @@
 import re
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
+from .forms import EssayForm
 
 
 EXAMPLE = {
@@ -131,7 +134,8 @@ mock = {
   "explanations": [ { "bad": "travelling to many new refreshing places", "hint": "The word 'refreshing' is not appropriate in this context. Consider using 'exciting' or 'novel' to better describe new places." }, { "bad": "change the boring atmosphere that they need to witness every day", "hint": "The phrase is awkward. A clearer expression might be 'break the monotony of their daily routine.'" }, { "bad": "yearn to taste a bunch of different cuisines", "hint": "The phrase 'a bunch of' is informal. Use 'a variety of' instead." }, { "bad": "it also involves some shortcomings.The adaptations and the embarrassment", "hint": "There is a missing space after the period. Additionally, 'the adaptations and the embarrassment' is vague. Clarify what shortcomings are being referred to." }, { "bad": "first time going visitors", "hint": "The phrase should be 'first-time visitors' to indicate that it is their initial experience." }, { "bad": "choosing to carry out the ongoing familiar tasks helps everyone become stably developed", "hint": "The phrase 'stably developed' is awkward. Consider 'steadily progress' or 'develop consistently' instead." }, { "bad": "Compare to the more adventurous counterpart", "hint": "The correct phrase should be 'Compared to the more adventurous individuals'." }, { "bad": "staying in an old traditional place", "hint": "The phrase 'old traditional place' could be clearer. Consider 'sticking to familiar environments' for better clarity." }, { "bad": "it is better to make a lot of effort to pursue the things that belong to you", "hint": "The expression 'things that belong to you' is unclear. Consider 'pursue familiar interests and routines' for better coherence." } ],
 }
 
-def chatComplete(data):
+def chatCompletions(data):
+  print(data)
   return mock
 
 article = """
@@ -148,30 +152,41 @@ It is better to make a lot of effort to pursue the things that belong to you.
 
 def splitEssay(essay, bad_list):
   # 创建一个映射，将 bad 列表中的每个片段映射到其 ID
-    bad_map = {bad: idx for idx, bad in enumerate(bad_list)}
-    # 使用正则表达式构造一个模式，将所有 bad 片段作为分隔符
-    # `re.escape` 用于处理特殊字符，使其在正则表达式中被视为普通字符
-    bad_patterns = '|'.join(re.escape(bad) for bad in bad_list)
-    # 使用 re.split 将文章按 bad 列表中的片段分割
-    parts = re.split(f'({bad_patterns})', essay)
-    result = []
-    current_id = -1
-    for part in parts:
-        if part in bad_map:
-            # 如果分割出的部分在 bad_list 中，则使用相应的 ID
-            current_id = bad_map[part]
-        else:
-            # 否则，将 ID 设置为 -1
-            current_id = -1
-        result.append({'id': current_id, 'val': part})
-    return result
+  bad_map = {bad: idx for idx, bad in enumerate(bad_list)}
+  # 使用正则表达式构造一个模式，将所有 bad 片段作为分隔符
+  # `re.escape` 用于处理特殊字符，使其在正则表达式中被视为普通字符
+  bad_patterns = '|'.join(re.escape(bad) for bad in bad_list)
+  # 使用 re.split 将文章按 bad 列表中的片段分割
+  parts = re.split(f'({bad_patterns})', essay)
+  result = []
+  current_id = -1
+  for part in parts:
+    if part in bad_map:
+      # 如果分割出的部分在 bad_list 中，则使用相应的 ID
+      current_id = bad_map[part]
+    else:
+      # 否则，将 ID 设置为 -1
+      current_id = -1
+    result.append({'id': current_id, 'val': part})
+  return result
 
-def analyze_essay(request):
-  if request.method == 'POST':
-    result = chatComplete("Topic: {} Essay: {}".format(request.POST['topic'], request.POST['essay']))
-    result['splits'] = splitEssay(article or request.POST['essay'], [item['bad'] for item in result['explanations']])
-    return render(request, 'home.html', { 'result': result })
-  return render(request, 'check.html')
+class AnalyzeEssayView(LoginRequiredMixin, View):
+  def get(self, request):
+    form = EssayForm()
+    return render(request, 'check.html', {'form': form})
+
+  def post(self, request):
+    form = EssayForm(request.POST)
+    if form.is_valid():
+      topic = form.cleaned_data['topic']
+      essay = form.cleaned_data['essay']
+
+      result = chatCompletions("Topic: {} Essay: {}".format(topic, essay))
+      result['splits'] = splitEssay(article or essay, [item['bad'] for item in result['explanations']])
+
+      return render(request, 'home.html', { 'result': result })
+    else:
+      return render(request, 'check.html', {'form': form})
 
 def home(request):
   return render(request, 'home.html', { 'result': EXAMPLE })
