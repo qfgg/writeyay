@@ -19,3 +19,9 @@ class EssayForm(forms.Form):
             'required': 'Please enter an IELTS essay for analysis',
         }
     )
+    word_count = forms.IntegerField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'word-count-input',
+        }),
+        required=False
+    )

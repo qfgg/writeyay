@@ -16,16 +16,20 @@
         {{ form.topic.errors }}
       </div>
       <div class="mb-2">
-        <label for="essay" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Essay <span class="text-dark-6 text-sm">(Word Count: 0)</span></label>
+        <label for="essay" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Essay <span id="word-count" class="text-dark-6 text-sm">(Word Count: 0)</span></label>
         {{ form.essay }}
         {{ form.essay.errors }}
       </div>
+      {{ form.word_count }}
     </form>
   </div>
 </section>
 <script>
   let topicTA = document.getElementById('topic-textarea');
   let essayTA = document.getElementById('essay-textarea');
+  const wordCountDisplay = document.getElementById('word-count');
+  const wordCountField = document.getElementById('word-count-input');
+
   document.addEventListener('DOMContentLoaded', () => {
     function adjustTopicTextareaHeight() {
       // Reset height to auto to get the scrollHeight correctly
@@ -41,8 +45,17 @@
       // Set the height to the scrollHeight
       essayTA.style.height = `${essayTA.scrollHeight}px`;
     }
+    function updateWordCount() {
+      const text = essayTA.value;
+      // Remove punctuation and multiple spaces, split by space to get words
+      const cleanedText = text.replace(/[^\w\s]|_/g, '').replace(/\s+/g, ' ').trim();
+      const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
+      wordCountDisplay.textContent = '(Word Count: ' + wordCount + ')';
+      wordCountField.value = wordCount;
+    }
     // Attach the adjust function to input and change events
     essayTA.addEventListener('input', adjustEssayTextareaHeight);
+    essayTA.addEventListener('input', updateWordCount);
 
     // Initial adjustment
     adjustTopicTextareaHeight();

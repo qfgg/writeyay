@@ -160,7 +160,11 @@
           {% endfor %}
         </div>
         <div class="mt-2">
-          <span class="text-dark-6 text-sm">(Word Count: 0)</span>
+          {% if result.count >= 0 %}
+          <span class="text-dark-6 text-sm">(Word Count: {{result.count}})</span>
+          {% else %}
+          <span class="text-dark-6 text-sm">(Word Count: 257)</span>
+          {% endif %}
         </div>
       </div>
       <div class="w-50p">

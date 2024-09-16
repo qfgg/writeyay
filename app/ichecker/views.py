@@ -136,7 +136,6 @@ mock = {
 }
 
 def chatCompletions(data):
-  print(data)
   return mock
 
 article = """
@@ -181,10 +180,12 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
     if form.is_valid():
       topic = form.cleaned_data['topic']
       essay = form.cleaned_data['essay']
+      count = form.cleaned_data['word_count']
 
       result = chatCompletions("Topic: {} Essay: {}".format(topic, essay))
       result['splits'] = splitEssay(article or essay, [item['bad'] for item in result['explanations']])
-
+      result['count'] = count
+      print(result)
       return render(request, 'home.html', { 'result': result })
     else:
       return render(request, 'check.html', {'form': form})
