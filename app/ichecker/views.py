@@ -185,7 +185,6 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
       result = chatCompletions("Topic: {} Essay: {}".format(topic, essay))
       result['splits'] = splitEssay(article or essay, [item['bad'] for item in result['explanations']])
       result['count'] = count
-      print(result)
       return render(request, 'home.html', { 'result': result })
     else:
       return render(request, 'check.html', {'form': form})

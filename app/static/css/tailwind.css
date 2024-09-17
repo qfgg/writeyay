@@ -3180,8 +3180,9 @@ footer {
   background-color: #fecaca;
   transition: background-color 0.5s ease;
 }
-.bg-error:hover{
-  background-color: #fca5a5;
+.bg-error:hover,
+.bg-error-highlight{
+  background-color: #f87171;
   cursor: pointer;
 }
 
@@ -3209,4 +3210,15 @@ footer {
 
 .errorlist li {
   color: #ef4444;
+}
+
+.exp {
+  position: relative;
+  left: 0;
+  right: 0;
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1),top 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.exp-focus {
+  outline: 4px solid #f87171;
 }
