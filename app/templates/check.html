@@ -63,7 +63,7 @@
         essayTA.off('input', adjustEssayTextareaHeight);
         essayTA.off('input', updateWordCount);
     }
-    $(window).on('beforeunload', clearEvents);
+    $(window).on('unload', clearEvents);
 
     // Initial adjustment
     adjustTopicTextareaHeight();

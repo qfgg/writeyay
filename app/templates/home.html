@@ -262,14 +262,14 @@
     $container.on('mouseleave', '.exp',leaveComment );
 
     // 清理事件绑定的函数
-    function clearEvents() {console.log('clear');
-        $container.off('mouseenter', '.split', hoverEssay);
-        $container.off('mouseleave', '.split', leaveEssay);
-        $container.off('mouseenter', '.exp', hoverComment);
-        $container.off('mouseleave', '.exp', leaveComment);
+    function clearEvents() {
+      $container.off('mouseenter', '.split', hoverEssay);
+      $container.off('mouseleave', '.split', leaveEssay);
+      $container.off('mouseenter', '.exp', hoverComment);
+      $container.off('mouseleave', '.exp', leaveComment);
     }
     // 在文档卸载时清理事件绑定
-    $(window).on('beforeunload', clearEvents);
+    $(window).on('unload', clearEvents);
   });
 </script>
 {% endblock %}
