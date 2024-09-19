@@ -188,77 +188,88 @@
 {% endblock %}
 {% block js %}
 <script>
+  function hoverEssay(event) {
+    // 获取当前 a 元素
+    var $a = $(this);
+    // 从 a 元素的 id 获取索引部分
+    var aId = $a.attr('id'); // 如 'a0'
+    var index = aId.replace('split-', ''); // 提取数字部分 '0'
+    // 构造对应的 b 元素的 id
+    var bId = 'exp-' + index;
+    var $b = $('#' + bId);
+    // 确保 b 元素存在
+    if ($b.length) {
+        var aOffset = $a.offset();
+        var bOffset = $b.offset();
+        // 计算 b 相对 a 的 Y 坐标差异
+        var yDifference = aOffset.top - bOffset.top;
+        // 移动 b 到鼠标位置
+        $b.addClass('exp-focus');
+        $b.css({
+          left: -25,
+          top: yDifference,
+          'z-index': 100,
+        });
+    }
+  }
+  function leaveEssay() {
+    // 获取当前 a 元素
+    var $a = $(this);
+    // 从 a 元素的 id 获取索引部分
+    var aId = $a.attr('id'); // 如 'split-0'
+    var index = aId.replace('split-', ''); // 提取数字部分 '0'
+    // 构造对应的 b 元素的 id
+    var bId = 'exp-' + index;
+    var $b = $('#' + bId);
+    // 恢复 b 的原始位置
+    $b.removeClass('exp-focus');
+    $b.css({
+      left: 0,
+      top: 0,
+      'z-index': 0,
+    });
+  }
+  function hoverComment(event) {
+    // 获取当前 b 元素
+    var $b = $(this);
+    // 从 b 元素的 id 获取索引部分
+    var bId = $b.attr('id'); // 如 'exp-0'
+    var index = bId.replace('exp-', ''); // 提取数字部分 '0'
+    // 构造对应的 a 元素的 id
+    var aId = 'split-' + index;
+    var $a = $('#' + aId);
+    $a.addClass('bg-error-highlight');
+    $b.addClass('exp-focus');
+  }
+  function leaveComment() {
+    // 获取当前 b 元素
+    var $b = $(this);
+    // 从 b 元素的 id 获取索引部分
+    var bId = $b.attr('id'); // 如 'exp-0'
+    var index = bId.replace('exp-', ''); // 提取数字部分 '0'
+    // 构造对应的 a 元素的 id
+    var aId = 'split-' + index;
+    var $a = $('#' + aId);
+    // 恢复 b 的原始位置
+    $a.removeClass('bg-error-highlight');
+    $b.removeClass('exp-focus');
+  }
   $(document).ready(function() {
     var $container = $('#container');
-    var originalPosition;
+    $container.on('mouseenter', '.split', hoverEssay);
+    $container.on('mouseleave', '.split', leaveEssay);
+    $container.on('mouseenter', '.exp', hoverComment);
+    $container.on('mouseleave', '.exp',leaveComment );
 
-    $container.on('mouseenter', '.split', function(event) {
-        // 获取当前 a 元素
-        var $a = $(this);
-        // 从 a 元素的 id 获取索引部分
-        var aId = $a.attr('id'); // 如 'a0'
-        var index = aId.replace('split-', ''); // 提取数字部分 '0'
-        // 构造对应的 b 元素的 id
-        var bId = 'exp-' + index;
-        var $b = $('#' + bId);
-        // 确保 b 元素存在
-        if ($b.length) {
-            var aOffset = $a.offset();
-            var bOffset = $b.offset();
-            // 计算 b 相对 a 的 Y 坐标差异
-            var yDifference = aOffset.top - bOffset.top;
-            // 移动 b 到鼠标位置
-            $b.addClass('exp-focus');
-            $b.css({
-              left: -25,
-              top: yDifference,
-            });
-        }
-    });
-
-    $container.on('mouseleave', '.split', function() {
-        // 获取当前 a 元素
-        var $a = $(this);
-        // 从 a 元素的 id 获取索引部分
-        var aId = $a.attr('id'); // 如 'split-0'
-        var index = aId.replace('split-', ''); // 提取数字部分 '0'
-        // 构造对应的 b 元素的 id
-        var bId = 'exp-' + index;
-        var $b = $('#' + bId);
-        // 恢复 b 的原始位置
-        $b.removeClass('exp-focus');
-        $b.css({
-          left: 0,
-          top: 0,
-        });
-    });
-
-    $container.on('mouseenter', '.exp', function(event) {
-        // 获取当前 b 元素
-        var $b = $(this);
-        // 从 b 元素的 id 获取索引部分
-        var bId = $b.attr('id'); // 如 'exp-0'
-        var index = bId.replace('exp-', ''); // 提取数字部分 '0'
-        // 构造对应的 a 元素的 id
-        var aId = 'split-' + index;
-        var $a = $('#' + aId);
-        $a.addClass('bg-error-highlight');
-        $b.addClass('exp-focus');
-    });
-
-    $container.on('mouseleave', '.exp', function() {
-        // 获取当前 b 元素
-        var $b = $(this);
-        // 从 b 元素的 id 获取索引部分
-        var bId = $b.attr('id'); // 如 'exp-0'
-        var index = bId.replace('exp-', ''); // 提取数字部分 '0'
-        // 构造对应的 a 元素的 id
-        var aId = 'split-' + index;
-        var $a = $('#' + aId);
-        // 恢复 b 的原始位置
-        $a.removeClass('bg-error-highlight');
-        $b.removeClass('exp-focus');
-    });
+    // 清理事件绑定的函数
+    function clearEvents() {console.log('clear');
+        $container.off('mouseenter', '.split', hoverEssay);
+        $container.off('mouseleave', '.split', leaveEssay);
+        $container.off('mouseenter', '.exp', hoverComment);
+        $container.off('mouseleave', '.exp', leaveComment);
+    }
+    // 在文档卸载时清理事件绑定
+    $(window).on('beforeunload', clearEvents);
   });
 </script>
 {% endblock %}

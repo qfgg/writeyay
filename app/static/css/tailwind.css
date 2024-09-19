@@ -3182,7 +3182,7 @@ footer {
 }
 .bg-error:hover,
 .bg-error-highlight{
-  background-color: #f87171;
+  background-color: #fca5a5;
   cursor: pointer;
 }
 
@@ -3209,7 +3209,7 @@ footer {
 }
 
 .errorlist li {
-  color: #ef4444;
+  color: #fca5a5;;
 }
 
 .exp {

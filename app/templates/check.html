@@ -27,37 +27,43 @@
 {% endblock %}
 {% block js %}
 <script>
-  let topicTA = document.getElementById('topic-textarea');
-  let essayTA = document.getElementById('essay-textarea');
-  const wordCountDisplay = document.getElementById('word-count');
-  const wordCountField = document.getElementById('word-count-input');
+  let topicTA = $('#topic-textarea');
+  let essayTA = $('#essay-textarea');
+  const wordCountDisplay = $('#word-count');
+  const wordCountField = $('#word-count-input');
 
-  document.addEventListener('DOMContentLoaded', () => {
+  $(document).ready(function() {
     function adjustTopicTextareaHeight() {
       // Reset height to auto to get the scrollHeight correctly
-      topicTA.style.height = 'auto';
+      topicTA.css('height', 'auto');
       // Set the height to the scrollHeight
-      topicTA.style.height = `${topicTA.scrollHeight}px`;
+      topicTA.css('height', topicTA[0].scrollHeight + 'px');;
     }
-    // Attach the adjust function to input and change events
-    topicTA.addEventListener('input', adjustTopicTextareaHeight);
     function adjustEssayTextareaHeight() {
       // Reset height to auto to get the scrollHeight correctly
-      essayTA.style.height = 'auto';
+      essayTA.css('height', 'auto');
       // Set the height to the scrollHeight
-      essayTA.style.height = `${essayTA.scrollHeight}px`;
+      essayTA.css('height', essayTA[0].scrollHeight + 'px');
     }
     function updateWordCount() {
-      const text = essayTA.value;
+      const text = essayTA.val();
       // Remove punctuation and multiple spaces, split by space to get words
       const cleanedText = text.replace(/[^\w\s]|_/g, '').replace(/\s+/g, ' ').trim();
       const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
-      wordCountDisplay.textContent = '(Word Count: ' + wordCount + ')';
-      wordCountField.value = wordCount;
+      wordCountDisplay.text('(Word Count: ' + wordCount + ')');
+      wordCountField.val(wordCount);
     }
     // Attach the adjust function to input and change events
-    essayTA.addEventListener('input', adjustEssayTextareaHeight);
-    essayTA.addEventListener('input', updateWordCount);
+    topicTA.on('input', adjustTopicTextareaHeight);
+    essayTA.on('input', adjustEssayTextareaHeight);
+    essayTA.on('input', updateWordCount);
+
+    function clearEvents() {
+        topicTA.off('input', adjustTopicTextareaHeight);
+        essayTA.off('input', adjustEssayTextareaHeight);
+        essayTA.off('input', updateWordCount);
+    }
+    $(window).on('beforeunload', clearEvents);
 
     // Initial adjustment
     adjustTopicTextareaHeight();
