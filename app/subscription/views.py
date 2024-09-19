@@ -39,7 +39,7 @@ def subscription_management(request):
     else:
         subscription_detail = {
             'is_subscribed': False,
-            'credits': 0 if sub.usage_count >= 2 else 2 - sub.usage_count
+            'credits': sub.credits
         }
     return render(request, 'subscription/subscription.html', {
         'subscription': subscription_detail,

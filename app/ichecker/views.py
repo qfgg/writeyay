@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from .forms import EssayForm
+from subscription.models import Subscription
 
 
 EXAMPLE = {
@@ -173,7 +174,8 @@ def splitEssay(essay, bad_list):
 class AnalyzeEssayView(LoginRequiredMixin, View):
   def get(self, request):
     form = EssayForm()
-    return render(request, 'check.html', {'form': form})
+    sub = Subscription.objects.get(user=request.user)
+    return render(request, 'check.html', {'form': form, 'sub': sub})
 
   def post(self, request):
     form = EssayForm(request.POST)
@@ -187,7 +189,7 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
       result['count'] = count
       return render(request, 'home.html', { 'result': result })
     else:
-      return render(request, 'check.html', {'form': form})
+      return render(request, 'check.html', {'form': form, 'sub': sub})
 
 def home(request):
   return render(request, 'home.html', { 'result': EXAMPLE })
