@@ -1,3 +1,4 @@
+import json
 from django import template
 from django.utils.html import format_html
 
@@ -30,3 +31,7 @@ def add_class_and_placeholder(field, args):
                        css_class,
                        placeholder,
                        field.value() or '')
+
+@register.filter(name='tojson')
+def tojson(value):
+    return json.dumps(value)

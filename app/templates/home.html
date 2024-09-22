@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load custom_filters %}
 
 {% block title %}IELTS Writing AI Analyzer{% endblock %}
 {% block content %}
@@ -142,14 +142,18 @@
 <section class="bg-gray-1 dark:bg-dark-2 pt-2">
   <div class="container px-0">
     {% if user.is_authenticated %}
-    <div>
+    <div class="flex">
       <a href="{% url 'analyze' %}" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
         Enter an IELTS Essay for Analysis
       </a>
       {% if result.count >= 0 %}
-      <a class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-        Export Result
-      </a>
+      <form action="{% url 'export_pdf' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="result" value="{{result|tojson }}">
+        <button type="submit" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
+          Export Analysis Result
+        </button>
+      </form>
       {% endif %}
     </div>
     {% endif %}

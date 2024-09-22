@@ -1,10 +1,14 @@
 import re
+import json
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from .forms import EssayForm
 from subscription.models import Subscription
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
 
 
 EXAMPLE = {
@@ -179,6 +183,7 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
 
   def post(self, request):
     form = EssayForm(request.POST)
+    sub = Subscription.objects.get(user=request.user)
     if form.is_valid():
       topic = form.cleaned_data['topic']
       essay = form.cleaned_data['essay']
@@ -190,6 +195,24 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
       return render(request, 'home.html', { 'result': result })
     else:
       return render(request, 'check.html', {'form': form, 'sub': sub})
+
+@require_POST
+def export_pdf(request):
+  result_str = request.POST.get('result', '')
+  result = json.loads(result_str)
+
+  # 渲染 HTML 模板
+  html_string = render_to_string('pdftmpl.html', {
+    'result': {
+      'overall': result['overall'],
+      'explanations': result['explanations'],
+      'count': result['count'],
+    }
+  })
+  # 创建 HTTP 响应
+  response = HttpResponse(html_string, content_type='text/html')
+  response['Content-Disposition'] = 'attachment; filename="report.html"'
+  return response
 
 def home(request):
   return render(request, 'home.html', { 'result': EXAMPLE })
