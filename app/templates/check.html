@@ -7,9 +7,6 @@
   <div class="container px-0 pt-20 lg:pt-[90px]">
     <form method="post" action="{% url 'analyze' %}" novalidate>
       {% csrf_token %}
-      <button type="submit" class="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-        Analyze IELTS Essay {% if not sub.is_subscribed %}(credits: {{sub.credits}}){% endif %}
-      </button>
       <div class="mt-2 mb-1">
         <label for="topic" class="mb-1 block text-lg font-semibold text-dark dark:text-white">Topic</label>
         {{ form.topic }}
@@ -21,6 +18,9 @@
         {{ form.essay.errors }}
       </div>
       {{ form.word_count }}
+      <button type="submit" class="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
+        Analyze IELTS Essay {% if not sub.is_subscribed %}(credits: {{sub.credits}}){% endif %}
+      </button>
     </form>
   </div>
 </section>

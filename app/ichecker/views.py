@@ -192,7 +192,7 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
       result = chatCompletions("Topic: {} Essay: {}".format(topic, essay))
       result['splits'] = splitEssay(article or essay, [item['bad'] for item in result['explanations']])
       result['count'] = count
-      return render(request, 'home.html', { 'result': result })
+      return render(request, 'analysis.html', { 'result': result })
     else:
       return render(request, 'check.html', {'form': form, 'sub': sub})
 
@@ -211,7 +211,7 @@ def export_pdf(request):
   })
   # 创建 HTTP 响应
   response = HttpResponse(html_string, content_type='text/html')
-  response['Content-Disposition'] = 'attachment; filename="report.html"'
+  response['Content-Disposition'] = 'attachment; filename="analysis_report.html"'
   return response
 
 def home(request):

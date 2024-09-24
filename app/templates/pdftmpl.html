@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IELTS Essay Analysis Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+        }
+        h2 {
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+        }
+        .summary {
+            margin-bottom: 20px;
+        }
+        .explanation {
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>IELTS Essay Analysis Result</h1>
+
+    <div class="score">
+        Overall Score: {{ result.overall.total }}
+    </div>
+
+    <div class="summary">
+        <strong>Word Count:</strong> {{ result.count }}
+    </div>
+
+    <h2>Score Breakdown</h2>
+    <ul>
+        <li>Task Achievement (TA): {{ result.overall.breakdown.ta }} - {{ result.overall.summary.ta }}</li>
+        <li>Coherence and Cohesion (CC): {{ result.overall.breakdown.cc }} - {{ result.overall.summary.cc }}</li>
+        <li>Lexical Resource (LR): {{ result.overall.breakdown.lr }} - {{ result.overall.summary.lr }}</li>
+        <li>Grammatical Range and Accuracy (GRA): {{ result.overall.breakdown.gra }} - {{ result.overall.summary.gra }}</li>
+    </ul>
+
+    <h2>Poor Expressions and Improvement Suggestions</h2>
+    {% for explanation in result.explanations %}
+        <div class="explanation">
+            <strong>Poor Expression:</strong> {{ explanation.bad }}<br>
+            <strong>Suggestion:</strong> {{ explanation.hint }}
+        </div>
+    {% endfor %}
+</body>
+</html>

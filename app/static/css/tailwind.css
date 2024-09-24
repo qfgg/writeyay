@@ -838,6 +838,10 @@ body {
   margin-bottom: 2.25rem;
 }
 
+.mb-18{
+  margin-bottom: 4.5rem;
+}
+
 .mb-\[14px\]{
   margin-bottom: 14px;
 }
@@ -1234,6 +1238,10 @@ body {
 
 .justify-between{
   justify-content: space-between;
+}
+
+.flex-1{
+  flex: 1;
 }
 
 .gap-1{

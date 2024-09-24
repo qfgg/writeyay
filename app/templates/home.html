@@ -1,279 +1,38 @@
-{% extends "base.html" %}{% load custom_filters %}
+{% extends "base.html" %}
 
-{% block title %}IELTS Writing AI Analyzer{% endblock %}
+{% block title %}IELTS Writing AI Checker{% endblock %}
 {% block content %}
-<section id="score" class="bg-gray-1 relative z-20 overflow-hidden pt-20 dark:bg-dark lg:pt-[90px]">
-  <div class="container mx-auto">
-    <div class="-mx-4 flex">
-      <div class="w-20p relative z-10 flex justify-center items-center bg-primary bg-opacity-70 text-8r font-extrabold text-white text-center sm:p-5">
-        <span>{{result.overall.total}}</span>
-        <div>
-          <span class="absolute left-0 top-0 -z-10">
-            <svg width="106" height="144" viewBox="0 0 106 144" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect opacity="0.1" x="-67" y="47.127" width="113.378" height="131.304" transform="rotate(-42.8643 -67 47.127)" fill="url(#paint0_linear_1416_214)"></rect>
-              <defs>
-                <linearGradient id="paint0_linear_1416_214" x1="-10.3111" y1="47.127" x2="-10.3111" y2="178.431" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="white"></stop>
-                  <stop offset="1" stop-color="white" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="w-20p relative z-10 items-center bg-primary bg-opacity-70 px-6 py-12 sm:p-5">
-        <div>
-          <div class="flex justify-between mb-6">
-            <span class="text-5xl font-extrabold text-white">
-              {{result.overall.breakdown.ta}}
-            </span>
-            <span class="text-right text-white max-width-120 ">Task Achievement</span>
-          </div>
-          <div class="text-sm font-semibold text-white text-opacity-70">
-            {{result.overall.summary.ta}}
-          </div>
-        </div>
-        <div>
-          <span class="absolute left-0 top-0 -z-10">
-            <svg width="106" height="144" viewBox="0 0 106 144" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect opacity="0.1" x="-67" y="47.127" width="113.378" height="131.304" transform="rotate(-42.8643 -67 47.127)" fill="url(#paint0_linear_1416_214)"></rect>
-              <defs>
-                <linearGradient id="paint0_linear_1416_214" x1="-10.3111" y1="47.127" x2="-10.3111" y2="178.431" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="white"></stop>
-                  <stop offset="1" stop-color="white" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="w-20p relative z-10 items-center bg-primary bg-opacity-70 px-6 py-12 sm:p-5">
-        <div>
-          <div class="flex justify-between mb-6">
-            <span class="text-5xl font-extrabold text-white">
-              {{result.overall.breakdown.cc}}
-            </span>
-            <span class="text-right text-white max-width-120 ">Coherence and Cohesion</span>
-          </div>
-          <div class="text-sm font-semibold text-white text-opacity-70">
-            {{result.overall.summary.cc}}
-          </div>
-        </div>
-        <div>
-          <span class="absolute left-0 top-0 -z-10">
-            <svg width="106" height="144" viewBox="0 0 106 144" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect opacity="0.1" x="-67" y="47.127" width="113.378" height="131.304" transform="rotate(-42.8643 -67 47.127)" fill="url(#paint0_linear_1416_214)"></rect>
-              <defs>
-                <linearGradient id="paint0_linear_1416_214" x1="-10.3111" y1="47.127" x2="-10.3111" y2="178.431" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="white"></stop>
-                  <stop offset="1" stop-color="white" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="w-20p relative z-10 items-center bg-primary bg-opacity-70 px-6 py-12 sm:p-5">
-        <div>
-          <div class="flex justify-between mb-6">
-            <span class="text-5xl font-extrabold text-white">
-              {{result.overall.breakdown.lr}}
-            </span>
-            <span class="text-right text-white max-width-120 ">Lexical Resource</span>
-          </div>
-          <div class="text-sm font-semibold text-white text-opacity-70">
-            {{result.overall.summary.lr}}
-          </div>
-        </div>
-        <div>
-          <span class="absolute left-0 top-0 -z-10">
-            <svg width="106" height="144" viewBox="0 0 106 144" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect opacity="0.1" x="-67" y="47.127" width="113.378" height="131.304" transform="rotate(-42.8643 -67 47.127)" fill="url(#paint0_linear_1416_214)"></rect>
-              <defs>
-                <linearGradient id="paint0_linear_1416_214" x1="-10.3111" y1="47.127" x2="-10.3111" y2="178.431" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="white"></stop>
-                  <stop offset="1" stop-color="white" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="w-20p relative z-10 items-center bg-primary bg-opacity-70 px-6 py-12 sm:p-5">
-        <div>
-          <div class="flex justify-between">
-            <span class="text-5xl font-extrabold text-white">
-              {{result.overall.breakdown.gra}}
-            </span>
-            <span class="text-right text-white max-width-120 ">Grammatical Range and Accuracy</span>
-          </div>
-          <div class="text-sm font-semibold text-white text-opacity-70">
-            {{result.overall.summary.gra}}
-          </div>
-        </div>
-        <div>
-          <span class="absolute left-0 top-0 -z-10">
-            <svg width="106" height="144" viewBox="0 0 106 144" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect opacity="0.1" x="-67" y="47.127" width="113.378" height="131.304" transform="rotate(-42.8643 -67 47.127)" fill="url(#paint0_linear_1416_214)"></rect>
-              <defs>
-                <linearGradient id="paint0_linear_1416_214" x1="-10.3111" y1="47.127" x2="-10.3111" y2="178.431" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="white"></stop>
-                  <stop offset="1" stop-color="white" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-            </svg>
-          </span>
-          <span class="absolute bottom-0 right-0 -z-10">
-            <svg width="175" height="104" viewBox="0 0 175 104" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect opacity="0.1" x="175.011" y="108.611" width="101.246" height="148.179" transform="rotate(137.136 175.011 108.611)" fill="url(#paint0_linear_1416_216)"></rect>
-              <defs>
-                <linearGradient id="paint0_linear_1416_216" x1="225.634" y1="108.611" x2="225.634" y2="256.79" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="white"></stop>
-                  <stop offset="1" stop-color="white" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-            </svg>
-          </span>
+<div class="relative z-10 overflow-hidden pt-[120px] pb-[60px] md:pt-[130px] lg:pt-[160px] dark:bg-dark">
+  <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-stroke/0 via-stroke dark:via-dark-3 to-stroke/0">
+  </div>
+  <div class="container">
+    <div class="flex flex-wrap items-center -mx-4">
+      <div class="w-full px-4">
+        <div class="text-center">
+          <h1 class="mb-4 text-3xl font-bold text-dark dark:text-white sm:text-4xl md:text-[40px] md:leading-[1.2]">
+            IELTS Essay AI Checker
+          </h1>
+          <p class="mb-5 text-base text-body-color dark:text-dark-6">
+            Evaluate IELTS essay by our powerful AI algorithm with scores and comprehensive analysis
+          </p>
         </div>
       </div>
     </div>
   </div>
-</section>
-<section class="bg-gray-1 dark:bg-dark-2 pt-2">
-  <div class="container px-0">
-    {% if user.is_authenticated %}
-    <div class="flex">
-      <a href="{% url 'analyze' %}" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-        Enter an IELTS Essay for Analysis
-      </a>
-      {% if result.count >= 0 %}
-      <form action="{% url 'export_pdf' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="result" value="{{result|tojson }}">
-        <button type="submit" class="mr-4 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-          Export Analysis Result
-        </button>
-      </form>
-      {% endif %}
-    </div>
-    {% endif %}
-    <div class="flex mt-2 relative" id="container">
-      <div class="w-50p mr-4">
-        <div>
-          {% for split in result.splits %}
-            {% if split.id == -1 %}
-            <span>{{split.val}}</span>
-            {% else %}
-            <span id="split-{{ split.id }}" class="split bg-error">{{split.val}}</span>
-            {% endif %}
-          {% endfor %}
-        </div>
-        <div class="mt-2">
-          {% if result.count >= 0 %}
-          <span class="text-dark-6 text-sm">(Word Count: {{result.count}})</span>
-          {% else %}
-          <span class="text-dark-6 text-sm">(Word Count: 257)</span>
-          {% endif %}
-        </div>
-      </div>
-      <div class="w-50p">
-        <div class="px-2">
-          {% for ex in result.explanations %}
-          <div id="exp-{{ forloop.counter0 }}" class="exp group mb-2 p-3 rounded-xl bg-white shadow-testimonial dark:bg-dark dark:shadow-none text-sm text-body-color dark:text-dark-6">
-            <b>{{ex.bad}}</b>
-            <p>{{ex.hint}}</p>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
+</div>
+{% include 'result.html' %}
+<div class="bg-gray-100 font-sans flex items-center justify-center min-h-screen pt-2 mt-2">
+  <div class="bg-white rounded-lg p-8 px-10 max-w-lg w-full">
+      <h1 class="text-2xl font-bold mb-4 text-center">Struggling with Your IELTS Writing Score?</h1>
+      <p class="text-gray-700 mb-4 text-center">Even after reviewing the official scoring criteria, do you still find it hard to identify where you’re going wrong?</p>
+      <p class="text-gray-700 mb-4 text-center">While getting feedback from an IELTS tutor can be helpful, it often comes with a hefty price tag for long-term practice.</p>
+      <h2 class="text-xl font-semibold mt-6 mb-2  text-center">Try Our IELTS Essay AI Checker!</h2>
+      <p class="text-gray-700 mb-4 text-center">Powered by the latest AI technology, our tool analyzes your essays according to official IELTS scoring standards.</p>
+      <p class="text-gray-700 mb-4 text-center">For the price of a lunch, you can access near-human-level feedback from an IELTS expert for an entire month.</p>
+      <p class="text-gray-700 mb-4 text-center">Boost your writing skills and start writing with confidence today!</p>
   </div>
-</section>
+</div>
 {% endblock %}
 {% block js %}
-<script>
-  function hoverEssay(event) {
-    // 获取当前 a 元素
-    var $a = $(this);
-    // 从 a 元素的 id 获取索引部分
-    var aId = $a.attr('id'); // 如 'a0'
-    var index = aId.replace('split-', ''); // 提取数字部分 '0'
-    // 构造对应的 b 元素的 id
-    var bId = 'exp-' + index;
-    var $b = $('#' + bId);
-    // 确保 b 元素存在
-    if ($b.length) {
-        var aOffset = $a.offset();
-        var bOffset = $b.offset();
-        // 计算 b 相对 a 的 Y 坐标差异
-        var yDifference = aOffset.top - bOffset.top;
-        // 移动 b 到鼠标位置
-        $b.addClass('exp-focus');
-        $b.css({
-          left: -25,
-          top: yDifference,
-          'z-index': 100,
-        });
-    }
-  }
-  function leaveEssay() {
-    // 获取当前 a 元素
-    var $a = $(this);
-    // 从 a 元素的 id 获取索引部分
-    var aId = $a.attr('id'); // 如 'split-0'
-    var index = aId.replace('split-', ''); // 提取数字部分 '0'
-    // 构造对应的 b 元素的 id
-    var bId = 'exp-' + index;
-    var $b = $('#' + bId);
-    // 恢复 b 的原始位置
-    $b.removeClass('exp-focus');
-    $b.css({
-      left: 0,
-      top: 0,
-      'z-index': 0,
-    });
-  }
-  function hoverComment(event) {
-    // 获取当前 b 元素
-    var $b = $(this);
-    // 从 b 元素的 id 获取索引部分
-    var bId = $b.attr('id'); // 如 'exp-0'
-    var index = bId.replace('exp-', ''); // 提取数字部分 '0'
-    // 构造对应的 a 元素的 id
-    var aId = 'split-' + index;
-    var $a = $('#' + aId);
-    $a.addClass('bg-error-highlight');
-    $b.addClass('exp-focus');
-  }
-  function leaveComment() {
-    // 获取当前 b 元素
-    var $b = $(this);
-    // 从 b 元素的 id 获取索引部分
-    var bId = $b.attr('id'); // 如 'exp-0'
-    var index = bId.replace('exp-', ''); // 提取数字部分 '0'
-    // 构造对应的 a 元素的 id
-    var aId = 'split-' + index;
-    var $a = $('#' + aId);
-    // 恢复 b 的原始位置
-    $a.removeClass('bg-error-highlight');
-    $b.removeClass('exp-focus');
-  }
-  $(document).ready(function() {
-    var $container = $('#container');
-    $container.on('mouseenter', '.split', hoverEssay);
-    $container.on('mouseleave', '.split', leaveEssay);
-    $container.on('mouseenter', '.exp', hoverComment);
-    $container.on('mouseleave', '.exp',leaveComment );
-
-    // 清理事件绑定的函数
-    function clearEvents() {
-      $container.off('mouseenter', '.split', hoverEssay);
-      $container.off('mouseleave', '.split', leaveEssay);
-      $container.off('mouseenter', '.exp', hoverComment);
-      $container.off('mouseleave', '.exp', leaveComment);
-    }
-    // 在文档卸载时清理事件绑定
-    $(window).on('unload', clearEvents);
-  });
-</script>
+{% include 'result_script.html' %}
 {% endblock %}
