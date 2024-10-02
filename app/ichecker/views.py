@@ -215,6 +215,8 @@ def export_pdf(request):
       'overall': result['overall'],
       'explanations': result['explanations'],
       'count': result['count'],
+      'topic': result['topic'],
+      'essay': result['essay'],
     }
   })
   # 创建 HTTP 响应

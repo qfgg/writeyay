@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <title>IELTS Essay Analysis Result</title>
     <style>
-        .report-body {
+        body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            background-color: #ffffff; /* 背景颜色改为白色 */
+            margin: 0;
+            padding: 0;
+        }
+        .report-body {
             padding: 20px;
-            background-color: #f4f4f4;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            background-color: #ffffff;
         }
         .report-title {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
         }
         .report-score {
             font-size: 24px;
@@ -25,11 +34,12 @@
             border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
             color: #007BFF;
+            margin-top: 20px;
         }
         .report-summary {
             margin-bottom: 20px;
             padding: 10px;
-            background-color: #ffffff;
+            background-color: #f9f9f9;
             border-radius: 5px;
         }
         .report-explanation {
@@ -41,7 +51,7 @@
         .report-appendix {
             margin-top: 30px;
             padding: 10px;
-            background-color: #ffffff;
+            background-color: #f9f9f9;
             border-radius: 5px;
         }
         .essay-topic, .essay-content {
@@ -50,6 +60,9 @@
             border-radius: 5px;
             background-color: #fafafa;
             margin-bottom: 15px;
+        }
+        ul {
+            padding-left: 20px; /* 增加列表的缩进 */
         }
     </style>
 </head>
