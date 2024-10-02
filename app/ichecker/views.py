@@ -1,3 +1,4 @@
+import os
 import re
 import json
 from django.shortcuts import render
@@ -9,6 +10,9 @@ from subscription.models import Subscription
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.template.loader import render_to_string
+from openai import OpenAI
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 EXAMPLE = {
@@ -133,27 +137,21 @@ EXAMPLE = {
   ]
 }
 
-mock = {
-  "overall": {
-      "total": 5.5, "breakdown": { "ta": 5.5, "cc": 5.0, "lr": 5.5, "gra": 6.0 }, "summary": { "ta": "The essay addresses the task by discussing both attitudes of trying new things and sticking with familiar ones. However, the explanation is somewhat vague and lacks depth in examples and arguments. The conclusion does not clearly restate or support the writer's opinion effectively.", "cc": "The coherence and cohesion are somewhat weak. Ideas are not always logically connected, and transitions between points are abrupt. There are some issues with paragraphing, and the essay could benefit from clearer organization.", "lr": "The lexical resource is generally adequate but lacks variety. There are some word choices that are awkward or not quite appropriate, which affects the clarity and precision of the essay.", "gra": "Grammatical range and accuracy are generally good with some errors. Sentence structures are varied, but there are occasional mistakes in word choice and grammar that affect readability." },
-  },
-  "explanations": [ { "bad": "travelling to many new refreshing places", "hint": "The word 'refreshing' is not appropriate in this context. Consider using 'exciting' or 'novel' to better describe new places." }, { "bad": "change the boring atmosphere that they need to witness every day", "hint": "The phrase is awkward. A clearer expression might be 'break the monotony of their daily routine.'" }, { "bad": "yearn to taste a bunch of different cuisines", "hint": "The phrase 'a bunch of' is informal. Use 'a variety of' instead." }, { "bad": "it also involves some shortcomings.The adaptations and the embarrassment", "hint": "There is a missing space after the period. Additionally, 'the adaptations and the embarrassment' is vague. Clarify what shortcomings are being referred to." }, { "bad": "first time going visitors", "hint": "The phrase should be 'first-time visitors' to indicate that it is their initial experience." }, { "bad": "choosing to carry out the ongoing familiar tasks helps everyone become stably developed", "hint": "The phrase 'stably developed' is awkward. Consider 'steadily progress' or 'develop consistently' instead." }, { "bad": "Compare to the more adventurous counterpart", "hint": "The correct phrase should be 'Compared to the more adventurous individuals'." }, { "bad": "staying in an old traditional place", "hint": "The phrase 'old traditional place' could be clearer. Consider 'sticking to familiar environments' for better clarity." }, { "bad": "it is better to make a lot of effort to pursue the things that belong to you", "hint": "The expression 'things that belong to you' is unclear. Consider 'pursue familiar interests and routines' for better coherence." } ],
-}
+PROMPT='''You are a professional on IELTS writing. You will be given a topic and an essay, and you can only follow steps to evaluate this essay based on the IELTS band score standard. If the user gives something other than IELTS writing, return a JSON object: {error: please input an essay with a topic for evaluation}.
+Step 1: get a JSON object overall = {total: total score, breakdown: {ta: Task Achievement score,cc: Coherence and Cohesion score,lr: Lexical Resource score,gra: Grammatical Range and Accuracy score}, summary: {ta: analysis of Task Achievement with examples,cc: analysis of Coherence and Cohesion with examples,lr: summary of Lexical Resource,gra: summary of Grammatical Range and Accuracy};
+Step 2: Check all words and expressions in the essay from start to end and find as many improper usage as possible. For each case, get an example = {bad: improper word or expression from original essay, hint: explain why it’s improper and how to improve it}. After checking the whole essay, get an array examples = an array of all examples you found in order;
+Step 3: return a JSON object: {overall: overall, explanations: explanations} from step 1 and 2.
+'''
 
 def chatCompletions(data):
-  return mock
-
-article = """
-It is often said travelling to many new refreshing places can be a great experience.
-But, sometimes, change the boring atmosphere that they need to witness every day is necessary.
-yearn to taste a bunch of different cuisines can be exciting.
-However, it also involves some shortcomings. The adaptations and the embarrassment can be challenging.
-For first time going visitors, the experience might be overwhelming.
-Choosing to carry out the ongoing familiar tasks helps everyone become stably developed.
-Compare to the more adventurous counterpart, this might seem less thrilling.
-Staying in an old traditional place might not appeal to everyone.
-It is better to make a lot of effort to pursue the things that belong to you.
-"""
+  return client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+      {"role": "system", "content": PROMPT},
+      {"role": "user", "content": data},
+    ],
+    response_format={ "type": "json_object" }
+  )
 
 def splitEssay(essay, bad_list):
   # 创建一个映射，将 bad 列表中的每个片段映射到其 ID
@@ -182,16 +180,26 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
     return render(request, 'check.html', {'form': form, 'sub': sub})
 
   def post(self, request):
-    form = EssayForm(request.POST)
     sub = Subscription.objects.get(user=request.user)
+    if not sub.is_subscribed and sub.credits == 0 and request.user.email != 'rayjoo333@gmail.com':
+      messages.error(request, 'You have already tried twice. Please subscribe to continue!')
+      return render(request, 'check.html', {'form': form, 'sub': sub})
+    form = EssayForm(request.POST)
     if form.is_valid():
       topic = form.cleaned_data['topic']
       essay = form.cleaned_data['essay']
       count = form.cleaned_data['word_count']
 
-      result = chatCompletions("Topic: {} Essay: {}".format(topic, essay))
-      result['splits'] = splitEssay(article or essay, [item['bad'] for item in result['explanations']])
+      completion = chatCompletions("Topic: {} Essay: {}".format(topic, essay))
+      result = json.loads(completion.choices[0].message.content)
+      if 'error' in result:
+        messages.error(request, result['error'])
+        return render(request, 'check.html', {'form': form, 'sub': sub})
+      result['splits'] = splitEssay(essay, [item['bad'] for item in result['explanations']])
       result['count'] = count
+      result['topic'] = topic
+      result['essay'] = essay
+      sub.use()
       return render(request, 'analysis.html', { 'result': result })
     else:
       return render(request, 'check.html', {'form': form, 'sub': sub})

@@ -18,8 +18,9 @@
         {{ form.essay.errors }}
       </div>
       {{ form.word_count }}
-      <button type="submit" class="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
-        Analyze IELTS Essay {% if not sub.is_subscribed %}(credits: {{sub.credits}}){% endif %}
+      <button type="submit" id="submit-button" class="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-10 py-3 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-blue-dark">
+        <span id="button-text">Analyze IELTS Essay {% if not sub.is_subscribed %}(credits: {{sub.credits}}){% endif %}</span>
+        <span id="spinner" class="loader hidden ml-2"></span>
       </button>
     </form>
   </div>
@@ -68,6 +69,19 @@
     // Initial adjustment
     adjustTopicTextareaHeight();
     adjustEssayTextareaHeight();
+
+    $('form').on('submit', function() {
+        const $button = $('#submit-button');
+        const $buttonText = $('#button-text');
+        const $spinner = $('#spinner');
+        // 禁用按钮
+        $button.prop('disabled', true);
+        // 修改按钮文本
+        $buttonText.text('Thank you for your patience! Our AI is busy analyzing your essay.');
+        // 显示加载动画
+        $spinner.removeClass('hidden');
+        return true; // 确保表单提交
+    });
 });
 </script>
 {% endblock %}

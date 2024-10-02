@@ -8,27 +8,48 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             padding: 20px;
+            background-color: #f4f4f4;
         }
         h1 {
             text-align: center;
+            color: #333;
         }
         .score {
             font-size: 24px;
             font-weight: bold;
             color: #007BFF;
+            text-align: center;
+            margin: 20px 0;
         }
         h2 {
             border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
+            color: #007BFF;
         }
         .summary {
             margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
         }
         .explanation {
             background-color: #f8f8f8;
             padding: 10px;
             margin-bottom: 10px;
             border-left: 4px solid #007BFF;
+        }
+        .appendix {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+        .topic, .essay {
+            padding: 10px;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+            background-color: #fafafa;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -58,5 +79,16 @@
             <strong>Suggestion:</strong> {{ explanation.hint }}
         </div>
     {% endfor %}
+
+    <div class="appendix">
+        <h2>Appendix</h2>
+        <div class="topic">
+            <strong>Topic:</strong> {{ result.topic }}
+        </div>
+        <div class="essay">
+            <strong>Essay:</strong><br>
+            <p>{{ result.essay }}</p>
+        </div>
+    </div>
 </body>
 </html>

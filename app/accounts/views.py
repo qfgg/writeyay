@@ -23,7 +23,7 @@ def register(request):
             user.save()
 
             current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
+            mail_subject = '[WRITEYAY] Activate your account.'
             message = render_to_string('accounts/activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
