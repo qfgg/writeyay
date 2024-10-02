@@ -4,47 +4,47 @@
     <meta charset="UTF-8">
     <title>IELTS Essay Analysis Result</title>
     <style>
-        body {
+        .report-body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             padding: 20px;
             background-color: #f4f4f4;
         }
-        h1 {
+        .report-title {
             text-align: center;
             color: #333;
         }
-        .score {
+        .report-score {
             font-size: 24px;
             font-weight: bold;
             color: #007BFF;
             text-align: center;
             margin: 20px 0;
         }
-        h2 {
+        .report-subtitle {
             border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
             color: #007BFF;
         }
-        .summary {
+        .report-summary {
             margin-bottom: 20px;
             padding: 10px;
             background-color: #ffffff;
             border-radius: 5px;
         }
-        .explanation {
+        .report-explanation {
             background-color: #f8f8f8;
             padding: 10px;
             margin-bottom: 10px;
             border-left: 4px solid #007BFF;
         }
-        .appendix {
+        .report-appendix {
             margin-top: 30px;
             padding: 10px;
             background-color: #ffffff;
             border-radius: 5px;
         }
-        .topic, .essay {
+        .essay-topic, .essay-content {
             padding: 10px;
             border: 1px solid #007BFF;
             border-radius: 5px;
@@ -54,40 +54,42 @@
     </style>
 </head>
 <body>
-    <h1>IELTS Essay Analysis Result</h1>
+    <div class="report-body">
+        <h1 class="report-title">IELTS Essay Analysis Result</h1>
 
-    <div class="score">
-        Overall Score: {{ result.overall.total }}
-    </div>
-
-    <div class="summary">
-        <strong>Word Count:</strong> {{ result.count }}
-    </div>
-
-    <h2>Score Breakdown</h2>
-    <ul>
-        <li>Task Achievement (TA): {{ result.overall.breakdown.ta }} - {{ result.overall.summary.ta }}</li>
-        <li>Coherence and Cohesion (CC): {{ result.overall.breakdown.cc }} - {{ result.overall.summary.cc }}</li>
-        <li>Lexical Resource (LR): {{ result.overall.breakdown.lr }} - {{ result.overall.summary.lr }}</li>
-        <li>Grammatical Range and Accuracy (GRA): {{ result.overall.breakdown.gra }} - {{ result.overall.summary.gra }}</li>
-    </ul>
-
-    <h2>Poor Expressions and Improvement Suggestions</h2>
-    {% for explanation in result.explanations %}
-        <div class="explanation">
-            <strong>Poor Expression:</strong> {{ explanation.bad }}<br>
-            <strong>Suggestion:</strong> {{ explanation.hint }}
+        <div class="report-score">
+            Overall Score: {{ result.overall.total }}
         </div>
-    {% endfor %}
 
-    <div class="appendix">
-        <h2>Appendix</h2>
-        <div class="topic">
-            <strong>Topic:</strong> {{ result.topic }}
+        <div class="report-summary">
+            <strong>Word Count:</strong> {{ result.count }}
         </div>
-        <div class="essay">
-            <strong>Essay:</strong><br>
-            <p>{{ result.essay }}</p>
+
+        <h2 class="report-subtitle">Score Breakdown</h2>
+        <ul>
+            <li>Task Achievement (TA): {{ result.overall.breakdown.ta }} - {{ result.overall.summary.ta }}</li>
+            <li>Coherence and Cohesion (CC): {{ result.overall.breakdown.cc }} - {{ result.overall.summary.cc }}</li>
+            <li>Lexical Resource (LR): {{ result.overall.breakdown.lr }} - {{ result.overall.summary.lr }}</li>
+            <li>Grammatical Range and Accuracy (GRA): {{ result.overall.breakdown.gra }} - {{ result.overall.summary.gra }}</li>
+        </ul>
+
+        <h2>Poor Expressions and Improvement Suggestions</h2>
+        {% for explanation in result.explanations %}
+            <div class="report-explanation">
+                <strong>Poor Expression:</strong> {{ explanation.bad }}<br>
+                <strong>Suggestion:</strong> {{ explanation.hint }}
+            </div>
+        {% endfor %}
+
+        <div class="report-appendix">
+            <h2>Appendix</h2>
+            <div class="essay-topic">
+                <strong>Topic:</strong> {{ result.topic }}
+            </div>
+            <div class="essay-content">
+                <strong>Essay:</strong><br>
+                <p>{{ result.essay }}</p>
+            </div>
         </div>
     </div>
 </body>
