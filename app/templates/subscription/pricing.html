@@ -95,12 +95,21 @@
                 </p>
               </div>
             </div>
-            <form action="create_checkout_session/" method="POST">
+            {% if user.is_authenticated and subscription.is_subscribed %}
+            <form action="/create_portal_session/" method="POST">
+                {% csrf_token %}
+                <button id="checkout-and-portal-button" type="submit" class="inline-block rounded-md bg-primary px-7 py-3 text-center text-base font-medium text-white transition hover:bg-blue-dark">
+                    Manage Subscription
+                </button>
+            </form>
+            {% else %}
+            <form action="/create_checkout_session/" method="POST">
                 {% csrf_token %}
                 <button id="checkout-and-portal-button" type="submit" class="inline-block rounded-md bg-primary px-7 py-3 text-center text-base font-medium text-white transition hover:bg-blue-dark">
                     Subscribe
                 </button>
             </form>
+            {% endif %}
           </div>
         </div>
       </div>

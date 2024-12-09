@@ -4,3 +4,7 @@ __pycache
 .env.dev
 .env.prod
 .env.prod.db
+.env.staging
+.env.prod.proxy-companion
+.env.staging.proxy-companion
+

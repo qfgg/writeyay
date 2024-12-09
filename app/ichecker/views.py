@@ -181,10 +181,10 @@ class AnalyzeEssayView(LoginRequiredMixin, View):
 
   def post(self, request):
     sub = Subscription.objects.get(user=request.user)
+    form = EssayForm(request.POST)
     if not sub.is_subscribed and sub.credits == 0 and request.user.email != 'rayjoo333@gmail.com':
       messages.error(request, 'You have already tried twice. Please subscribe to continue!')
       return render(request, 'check.html', {'form': form, 'sub': sub})
-    form = EssayForm(request.POST)
     if form.is_valid():
       topic = form.cleaned_data['topic']
       essay = form.cleaned_data['essay']
@@ -226,3 +226,9 @@ def export_pdf(request):
 
 def home(request):
   return render(request, 'home.html', { 'result': EXAMPLE })
+
+def privacy(request):
+  return render(request, 'privacy.html')
+
+def terms(request):
+  return render(request, 'terms.html')

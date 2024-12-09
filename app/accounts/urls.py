@@ -8,11 +8,11 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
 )
 from . import views
-from allauth.account import views as allauth_views
 
 
 urlpatterns = [
     path('register/', views.register, name='register'),
+    path('verification/', views.verify, name='verify'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),

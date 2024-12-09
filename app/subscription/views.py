@@ -3,18 +3,23 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Subscription
+import logging
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def pricing(request):
+    subscription = {}
     canuse = False
     if request.user.is_authenticated:
         subscription = Subscription.objects.get(user=request.user)
         canuse = subscription.can_use()
-    return render(request, 'subscription/pricing.html', { 'canuse': canuse })
+    return render(request, 'subscription/pricing.html', {
+        'canuse': canuse,
+        'subscription': subscription
+    })
 
 @login_required(login_url='login')
 def subscription_management(request):
@@ -30,7 +35,8 @@ def subscription_management(request):
                 'end': datetime.fromtimestamp(subscription.current_period_end),
                 'price': subscription['items']['data'][0]['price']['unit_amount'] / 100,
                 'currency': subscription['items']['data'][0]['price']['currency'],
-                'interval': subscription['items']['data'][0]['plan']['interval']
+                'interval': subscription['items']['data'][0]['plan']['interval'],
+                'credits': sub.credits
             }
             print(subscription_detail)
         except stripe.error.StripeError as e:
@@ -48,12 +54,17 @@ def subscription_management(request):
 @login_required(login_url='login')
 def create_checkout_session(request):
     try:
-        customer = stripe.Customer.create(
-            email=request.user.email
-        )
+        customer_id = ''
         subscription = Subscription.objects.get(user=request.user)
-        subscription.stripe_customer_id = customer.id
-        subscription.save()
+        if subscription.stripe_customer_id:
+            customer_id = subscription.stripe_customer_id
+        else:
+            customer = stripe.Customer.create(
+                email=request.user.email
+            )
+            subscription.stripe_customer_id = customer.id
+            customer_id = customer.id
+            subscription.save()
 
         checkout_session = stripe.checkout.Session.create(
             line_items=[
@@ -63,7 +74,7 @@ def create_checkout_session(request):
                 },
             ],
             mode='subscription',
-            customer=customer.id,
+            customer=customer_id,
             customer_update={'address': 'auto'},
             success_url=settings.REDIRECT_DOMAIN + '/subscribe_success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=settings.REDIRECT_DOMAIN + '/subscribe_cancel',
@@ -98,8 +109,9 @@ def create_portal_session(request):
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
-    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    sig_header = request.headers.get('STRIPE_SIGNATURE')
     event = None
+    logging.warning(sig_header)
 
     try:
         event = stripe.Webhook.construct_event(
@@ -107,10 +119,12 @@ def stripe_webhook(request):
         )
     except ValueError as e:
         # Invalid payload
-        return HttpResponse(status=400)
+        logging.error(f"VAL {str(e)}")
+        return JsonResponse({'error': str(e)}, status=500)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
-        return HttpResponse(status=400)
+        logging.error(f"SIG {str(e)}")
+        return JsonResponse({'error': str(e)}, status=500)
 
     # Handle the event
     if event['type'] == 'checkout.session.completed':
@@ -124,7 +138,7 @@ def stripe_webhook(request):
             subscription.is_subscribed = True
             subscription.save()
         except Subscription.DoesNotExist:
-            print(f"Subscription with customer_id {customer_id} does not exist.")
+            logging.error(f"Subscription with customer_id {customer_id} does not exist.")
     elif event['type'] == 'customer.subscription.deleted':
         # handle subscription canceled automatically based
         # upon your subscription settings. Or if the user cancels it.
@@ -136,6 +150,6 @@ def stripe_webhook(request):
             subscription.is_subscribed = False
             subscription.save()
         except Subscription.DoesNotExist:
-            print(f"Subscription with customer_id {customer_id} does not exist.")
+            logging.error(f"Subscription with customer_id {customer_id} does not exist.")
 
     return HttpResponse(status=200)

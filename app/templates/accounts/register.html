@@ -25,7 +25,10 @@
                             {{ form.password.errors }}
                             </div>
                             <div class="mb-9">
-                                <button type="submit" class="w-full px-5 py-3 text-base text-white transition duration-300 ease-in-out border rounded-md cursor-pointer border-primary bg-primary hover:bg-blue-dark">Register</button>
+                                <button type="submit" id="signup-button" class="inline-flex items-center justify-center w-full px-5 py-3 text-base text-white transition duration-300 ease-in-out border rounded-md cursor-pointer border-primary bg-primary hover:bg-blue-dark">
+                                    <span id="button-text-1">Register</span>
+                                    <span id="spinner-1" class="loader hidden ml-2"></span>
+                                </button>
                             </div>
                         </form>
                     <span class="relative block text-center z-1 mb-7">
@@ -53,4 +56,22 @@
             </div>
         </div>
     </section>
+{% endblock %}
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function() {
+        const $button = $('#signup-button');
+        const $buttonText = $('#button-text-1');
+        const $spinner = $('#spinner-1');
+        // 禁用按钮
+        $button.prop('disabled', true);
+        // 修改按钮文本
+        $buttonText.text('Registering...');
+        // 显示加载动画
+        $spinner.removeClass('hidden');
+        return true; // 确保表单提交
+    });
+});
+</script>
 {% endblock %}
